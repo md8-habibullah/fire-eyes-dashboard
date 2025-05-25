@@ -2,6 +2,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
+import { API_BASE } from "../api";
 
 const containerVariants = {
   hidden: { opacity: 0, y: 40 },
@@ -42,7 +43,7 @@ const Register = () => {
     setLoading(true);
     setMsg("");
     try {
-      await axios.post("http://localhost:5000/api/users/register", form);
+      await axios.post(`${API_BASE}/api/users/register`, form);
       setMsg("🎉 Registration successful!");
       setForm({ name: "", phone: "", email: "", address: "", deviceId: "" });
     } catch (err) {
@@ -60,7 +61,7 @@ const Register = () => {
   ];
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-100 via-yellow-50 to-orange-100 relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-100 via-yellow-50 to-orange-100 relative overflow-hidden p-4">
       {/* Animated background blobs */}
       <motion.div
         className="absolute top-0 left-0 w-96 h-96 bg-red-300 rounded-full opacity-30 blur-3xl"
@@ -76,33 +77,33 @@ const Register = () => {
       />
 
       <motion.div
-        className="relative z-10 max-w-md w-full mx-auto bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl p-10 border border-orange-200"
+        className="relative z-10 max-w-2xl w-full mx-auto bg-white/90 backdrop-blur-lg rounded-3xl shadow-2xl p-12 border border-orange-200"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
         <motion.div
-          className="flex items-center mb-7"
+          className="flex items-center mb-10"
           initial={{ opacity: 0, x: -30 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
         >
           <motion.div
-            className="bg-gradient-to-br from-red-500 via-orange-400 to-yellow-300 rounded-full p-2 shadow-lg mr-3"
+            className="bg-gradient-to-br from-red-500 via-orange-400 to-yellow-300 rounded-full p-3 shadow-lg mr-4"
             animate={{ rotate: [0, 10, -10, 0] }}
             transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
           >
-            <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
               <path d="M12 2C12 2 7 7.5 7 11.5C7 15.09 9.91 18 13.5 18C16.09 18 18 16.09 18 13.5C18 10.5 12 2 12 2Z" fill="#F87171"/>
               <circle cx="12" cy="13" r="3" fill="#FBBF24"/>
             </svg>
           </motion.div>
-          <h2 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-red-600 via-orange-500 to-yellow-500 tracking-tight drop-shadow">
+          <h2 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-red-600 via-orange-500 to-yellow-500 tracking-tight drop-shadow">
             Fire Eyes Registration
           </h2>
         </motion.div>
         <motion.p
-          className="mb-7 text-gray-700 text-center font-medium"
+          className="mb-10 text-gray-700 text-center font-medium text-2xl"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15, duration: 0.5 }}
@@ -110,7 +111,7 @@ const Register = () => {
           Register your device to receive instant fire notifications and alerts.
         </motion.p>
         <motion.form
-          className="space-y-6"
+          className="space-y-8"
           variants={formVariants}
           initial="hidden"
           animate="visible"
@@ -118,14 +119,14 @@ const Register = () => {
         >
           {fields.map((field, i) => (
             <motion.div key={field.label} custom={i} variants={inputVariants}>
-              <label className="block text-sm font-semibold text-orange-700 mb-1">{field.label}</label>
+              <label className="block text-xl font-semibold text-orange-700 mb-2">{field.label}</label>
               <input
                 type={field.type}
                 name={field.name}
                 placeholder={field.placeholder}
                 value={form[field.name]}
                 onChange={handleChange}
-                className="input input-bordered w-full bg-white text-gray-900 border-orange-200 focus:border-orange-400 focus:ring-2 focus:ring-orange-200 transition text-base shadow-sm"
+                className="input input-bordered w-full bg-white text-gray-900 border-orange-200 focus:border-orange-400 focus:ring-2 focus:ring-orange-200 transition text-2xl shadow-sm py-4"
                 required
                 autoComplete="off"
               />
@@ -133,19 +134,19 @@ const Register = () => {
           ))}
           <motion.button
             type="submit"
-            className="btn btn-primary w-full bg-gradient-to-r from-red-500 via-orange-400 to-yellow-400 border-0 text-white font-bold text-lg shadow-xl hover:from-red-600 hover:to-yellow-500 transition-all duration-200"
-            whileHover={{ scale: 1.04, boxShadow: "0 8px 32px rgba(251,191,36,0.18)" }}
+            className="btn btn-primary w-full bg-gradient-to-r from-red-500 via-orange-400 to-yellow-400 border-0 text-white font-bold text-2xl shadow-xl hover:from-red-600 hover:to-yellow-500 transition-all duration-200 py-4 rounded-xl"
+            whileHover={{ scale: 1.06, boxShadow: "0 8px 32px rgba(251,191,36,0.18)" }}
             whileTap={{ scale: 0.98 }}
             disabled={loading}
           >
             {loading ? (
-              <span className="loading loading-spinner loading-sm mr-2"></span>
+              <span className="loading loading-spinner loading-md mr-2"></span>
             ) : null}
             {loading ? "Registering..." : "Register Device"}
           </motion.button>
           {msg && (
             <motion.div
-              className={`mt-4 text-center font-semibold px-4 py-2 rounded-xl shadow-sm ${
+              className={`mt-6 text-center font-semibold px-4 py-3 rounded-xl shadow-sm text-2xl ${
                 msg.includes("success") ? "bg-green-50 text-green-700 border border-green-200" : "bg-red-50 text-red-700 border border-red-200"
               }`}
               initial={{ opacity: 0, y: 10 }}

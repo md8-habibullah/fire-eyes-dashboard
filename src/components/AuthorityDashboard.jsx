@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import io from 'socket.io-client';
+import { API_BASE } from "../api";
 
-const socket = io('http://localhost:5000'); // adjust to your backend URL
+const socket = io(`${API_BASE}`); // adjust to your backend URL
 
 export default function AuthorityDashboard() {
   const [alerts, setAlerts] = useState([]);
