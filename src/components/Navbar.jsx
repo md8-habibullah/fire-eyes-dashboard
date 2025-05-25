@@ -34,6 +34,22 @@ const Navbar = () => {
       <div className="flex-none flex gap-3">
         <motion.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.96 }}>
           <Link
+            to="/"
+            className="btn btn-outline btn-sm border-white text-white hover:bg-white hover:text-red-600 transition-colors"
+          >
+            Home
+          </Link>
+        </motion.div>
+        <motion.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.96 }}>
+          <Link
+            to="/users"
+            className="btn btn-outline btn-sm border-white text-white hover:bg-white hover:text-red-600 transition-colors"
+          >
+            Show Users
+          </Link>
+        </motion.div>
+        <motion.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.96 }}>
+          <Link
             to="/login"
             className="btn btn-outline btn-sm border-white text-white hover:bg-white hover:text-red-600 transition-colors"
           >

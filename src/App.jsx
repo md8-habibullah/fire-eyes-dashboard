@@ -4,6 +4,8 @@ import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import AlertDetails from "./pages/AlertDetails";
+import ShowUsers from "./pages/ShowUsers";
+
 
 function App() {
   return (
@@ -15,6 +17,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/alert/:id" element={<AlertDetails />} />
+          <Route path="/users" element={<ShowUsers />} /> {/* <-- Add this */}
         </Routes>
       </div>
     </Router>
