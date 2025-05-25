@@ -51,7 +51,7 @@ const ShowUsers = () => {
 
   return (
     <div className="max-w-5xl mx-auto mt-10 bg-gradient-to-br from-yellow-50 via-orange-50 to-red-50 rounded-3xl shadow-2xl p-8 border border-orange-200">
-      <h2 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-red-600 via-orange-500 to-yellow-500 mb-10 text-center drop-shadow">
+      <h2 className="text-4xl font-extrabold text-red-600 tracking-wide mb-10 text-center drop-shadow">
         Registered Users
       </h2>
       {loading ? (

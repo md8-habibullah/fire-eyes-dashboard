@@ -14,15 +14,6 @@ const cardVariants = {
   },
 };
 
-const logoVariants = {
-  hidden: { opacity: 0, scale: 0.7 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    transition: { delay: 0.3, duration: 0.6, type: "spring" },
-  },
-};
-
 const buttonVariants = {
   rest: { scale: 1 },
   hover: { scale: 1.06, boxShadow: "0px 8px 32px rgba(255, 94, 0, 0.15)" },
@@ -40,9 +31,7 @@ const Login = () => {
     setLoading(true);
     setAlerts([]);
     try {
-      const res = await axios.get(
-        `${API_BASE}/api/alerts/user/${deviceId}`
-      );
+      const res = await axios.get(`${API_BASE}/api/alerts/user/${deviceId}`);
       setAlerts(res.data);
       if (res.data.length === 0)
         setMsg("No alert history found for this device.");
@@ -61,20 +50,29 @@ const Login = () => {
         animate="visible"
       >
         <div className="flex flex-col items-center mb-8">
-          <motion.img
-            src="/fav.png"
-            alt="Fire Eyes Logo"
-            className="w-24 h-24 mb-3"
-            variants={logoVariants}
-            initial="hidden"
-            animate="visible"
-          />
+          <motion.div
+            className="relative w-32 h-32 mb-3"
+            initial={{ opacity: 0, scale: 0.7 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.3, duration: 0.6, type: "spring" }}
+          >
+            {/* Glowing background */}
+            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-red-500 via-orange-400 to-yellow-300 blur-2xl opacity-70"></div>
+
+            {/* Gradient border */}
+            <div className="absolute inset-0 rounded-full border-4 border-transparent bg-gradient-to-r from-red-500 via-orange-400 to-yellow-300 animate-pulse"></div>
+
+            {/* Logo image */}
+            <img
+              src="/fav.png"
+              alt="Fire Eyes Logo"
+              className="relative w-full h-full object-cover rounded-full shadow-lg"
+            />
+          </motion.div>
           <h1 className="text-4xl font-extrabold text-red-600 tracking-wide mb-2">
             Fire Eyes
           </h1>
-          <p className="text-lg text-gray-500 font-medium">
-            Fire Notifier App
-          </p>
+          <p className="text-lg text-gray-500 font-medium">Fire Notifier App</p>
         </div>
         <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
           Login to your device
@@ -106,7 +104,9 @@ const Login = () => {
           </motion.button>
         </form>
         {msg && (
-          <div className="mt-6 text-center text-red-600 font-semibold text-xl">{msg}</div>
+          <div className="mt-6 text-center text-red-600 font-semibold text-xl">
+            {msg}
+          </div>
         )}
         {alerts.length > 0 && (
           <div className="mt-10">
@@ -126,7 +126,9 @@ const Login = () => {
                   {alerts.map((alert, idx) => (
                     <tr
                       key={alert._id}
-                      className={idx % 2 === 0 ? "bg-white/90" : "bg-orange-50/80"}
+                      className={
+                        idx % 2 === 0 ? "bg-white/90" : "bg-orange-50/80"
+                      }
                     >
                       <td className="py-3 px-3 text-gray-800 font-semibold">
                         {alert.type}
