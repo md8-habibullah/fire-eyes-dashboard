@@ -62,7 +62,7 @@ const Login = () => {
       >
         <div className="flex flex-col items-center mb-8">
           <motion.img
-            src="/fire-eyes-logo.png"
+            src="/fav.png"
             alt="Fire Eyes Logo"
             className="w-24 h-24 mb-3"
             variants={logoVariants}
