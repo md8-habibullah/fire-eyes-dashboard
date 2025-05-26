@@ -26,10 +26,25 @@ const Login = () => {
   const [alerts, setAlerts] = useState([]);
   const [msg, setMsg] = useState("");
   const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     document.title = "FireEyes - Login";
   }, []);
+
+  useEffect(() => {
+    if (!deviceId) {
+      setUser(null);
+      return;
+    }
+    // Fetch user by deviceId
+    axios.get(`${API_BASE}/api/users`).then((res) => {
+      const found = res.data.find(
+        (u) => u.deviceId.toLowerCase() === deviceId.toLowerCase()
+      );
+      setUser(found || null);
+    });
+  }, [deviceId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -219,6 +234,43 @@ const Login = () => {
                   ))}
                 </tbody>
               </table>
+            </div>
+          </div>
+        )}
+        {user && (
+          <div className="bg-white rounded-xl p-6 shadow mt-8 border border-orange-200">
+            <h3 className="text-2xl font-bold mb-4 text-orange-700">User Details</h3>
+            <div className="space-y-2 text-lg">
+              <div><span className="font-semibold text-gray-700">Name:</span> <span className="text-gray-900">{user.name}</span></div>
+              <div><span className="font-semibold text-gray-700">Phone:</span> <span className="text-gray-900">{user.phone}</span></div>
+              <div><span className="font-semibold text-gray-700">Email:</span> <span className="text-gray-900">{user.email}</span></div>
+              <div><span className="font-semibold text-gray-700">Address:</span> <span className="text-gray-900">{user.address}</span></div>
+              <div><span className="font-semibold text-gray-700">Device ID:</span> <span className="text-gray-900">{user.deviceId}</span></div>
+            </div>
+            <div className="flex gap-3 mt-6">
+              <button
+                className="btn btn-warning"
+                onClick={() => {
+                  const name = prompt("Edit Name", user.name);
+                  if (name !== null) {
+                    axios.put(`${API_BASE}/api/users/${user._id}`, { ...user, name })
+                      .then(() => window.location.reload());
+                  }
+                }}
+              >
+                Edit
+              </button>
+              <button
+                className="btn btn-error"
+                onClick={() => {
+                  if (window.confirm("Delete this user?")) {
+                    axios.delete(`${API_BASE}/api/users/${user._id}`)
+                      .then(() => window.location.reload());
+                  }
+                }}
+              >
+                Delete
+              </button>
             </div>
           </div>
         )}
