@@ -1,6 +1,7 @@
- import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { API_BASE } from "../api";
+import FireIcon from "../components/FireIcon";
 
 const Register = () => {
   useEffect(() => {
@@ -46,14 +47,11 @@ const Register = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-100 via-yellow-50 to-orange-100 p-4">
       <div className="max-w-2xl w-full bg-white rounded-3xl shadow-2xl p-12 border border-orange-200">
-        <div className="flex items-center mb-10">
-          <div className="bg-gradient-to-br from-red-500 via-orange-400 to-yellow-300 rounded-full p-3 shadow-lg mr-4">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
-              <path d="M12 2C12 2 7 7.5 7 11.5C7 15.09 9.91 18 13.5 18C16.09 18 18 16.09 18 13.5C18 10.5 12 2 12 2Z" fill="#F87171"/>
-              <circle cx="12" cy="13" r="3" fill="#FBBF24"/>
-            </svg>
+        <div className="flex items-center justify-center mb-10">
+          <div className="rounded-full p-3 mr-4 flex items-center justify-center">
+            <FireIcon size={90} />
           </div>
-          <h2 className="text-4xl font-extrabold text-red-600 tracking-wide mb-10 text-center drop-shadow">
+          <h2 className="text-4xl font-extrabold text-red-600 tracking-wide text-center drop-shadow m-0">
             Fire Eyes Registration
           </h2>
         </div>

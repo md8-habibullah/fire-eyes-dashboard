@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import axios from "axios";
 import { API_BASE } from "../api";
 import { useLocation } from "react-router-dom";
+import FireIcon from "../components/FireIcon";
 
 const cardVariants = {
   hidden: { opacity: 0, y: 40, scale: 0.95 },
@@ -39,7 +40,6 @@ const Login = () => {
       setUser(null);
       return;
     }
-    // Fetch user by deviceId
     axios.get(`${API_BASE}/api/users`).then((res) => {
       const found = res.data.find(
         (u) => u.deviceId.toLowerCase() === deviceId.toLowerCase()
@@ -126,32 +126,23 @@ const Login = () => {
         initial="hidden"
         animate="visible"
       >
-        <div className="flex flex-col items-center mb-8">
-          <motion.div
-            className="relative w-32 h-32 mb-3"
-            initial={{ opacity: 0, scale: 0.7 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.3, duration: 0.6, type: "spring" }}
-          >
+        <div className="flex flex-col items-center mb-10">
+          <div className="relative w-36 h-36 mb-4 flex items-center justify-center">
             {/* Glowing background */}
-            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-red-500 via-orange-400 to-yellow-300 blur-2xl opacity-70"></div>
-
+            {/* <div className="absolute inset-0 rounded-full bg-gradient-to-br from-red-500 via-orange-400 to-yellow-300 blur-2xl opacity-70"></div> */}
             {/* Gradient border */}
-            <div className="absolute inset-0 rounded-full border-4 border-transparent bg-gradient-to-r from-red-500 via-orange-400 to-yellow-300 animate-pulse"></div>
-
-            {/* Logo image */}
-            <img
-              src="/fav.png"
-              alt="Fire Eyes Logo"
-              className="relative w-full h-full object-cover rounded-full shadow-lg"
-            />
-          </motion.div>
-          <h1 className="text-4xl font-extrabold text-red-600 tracking-wide mb-2">
+            {/* <div className="absolute inset-0 rounded-full border-4 border-transparent bg-gradient-to-r from-red-500 via-orange-400 to-yellow-300 animate-pulse"></div> */}
+            {/* Animated Fire Icon */}
+            <FireIcon size={150} className="relative rounded-full" />
+          </div>
+          <h1 className="text-5xl font-extrabold text-red-600 tracking-wide mb-2 drop-shadow text-center">
             Fire Eyes
           </h1>
-          <p className="text-lg text-gray-500 font-medium">Fire Notifier App</p>
+          <p className="text-lg text-gray-500 font-medium mb-2 text-center">
+            Fire Notifier App
+          </p>
         </div>
-        <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
+        <h2 className="text-2xl font-semibold text-gray-800 mb-8 text-center">
           Login to your device
         </h2>
         <form onSubmit={handleSubmit}>
