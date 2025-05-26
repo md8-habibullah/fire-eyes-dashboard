@@ -1,9 +1,13 @@
 /* eslint-disable no-unused-vars */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { API_BASE } from "../api";
 
 const Register = () => {
+  useEffect(() => {
+    document.title = "FireEyes - Register";
+  }, []);
+
   const [form, setForm] = useState({
     name: "",
     phone: "",

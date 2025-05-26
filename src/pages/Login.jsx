@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
 import axios from "axios";
 import { API_BASE } from "../api";
+import { useLocation } from "react-router-dom";
 
 const cardVariants = {
   hidden: { opacity: 0, y: 40, scale: 0.95 },
@@ -20,10 +21,15 @@ const buttonVariants = {
 };
 
 const Login = () => {
-  const [deviceId, setDeviceId] = useState("");
+  const location = useLocation();
+  const [deviceId, setDeviceId] = useState(location.state?.deviceId || "");
   const [alerts, setAlerts] = useState([]);
   const [msg, setMsg] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    document.title = "FireEyes - Login";
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -37,6 +43,60 @@ const Login = () => {
         setMsg("No alert history found for this device.");
     } catch (err) {
       setMsg(err.response?.data?.error || "Login failed");
+    }
+    setLoading(false);
+  };
+
+  const simulateFireAlert = async () => {
+    setMsg("");
+    setLoading(true);
+    try {
+      const userRes = await axios.get(`${API_BASE}/api/users`);
+      const user = userRes.data.find(
+        (u) => u.deviceId.toLowerCase() === deviceId.toLowerCase()
+      );
+      if (!user) {
+        setMsg("User not found for this Device ID.");
+        setLoading(false);
+        return;
+      }
+      await axios.post(`${API_BASE}/api/alerts`, {
+        userId: user._id,
+        type: "FIRE",
+        location: { lat: 0, lng: 0 },
+      });
+      setMsg("🔥 Fire alert simulated!");
+      const res = await axios.get(`${API_BASE}/api/alerts/user/${deviceId}`);
+      setAlerts(res.data);
+    } catch {
+      setMsg("Failed to simulate alert.");
+    }
+    setLoading(false);
+  };
+
+  const simulateGasAlert = async () => {
+    setMsg("");
+    setLoading(true);
+    try {
+      const userRes = await axios.get(`${API_BASE}/api/users`);
+      const user = userRes.data.find(
+        (u) => u.deviceId.toLowerCase() === deviceId.toLowerCase()
+      );
+      if (!user) {
+        setMsg("User not found for this Device ID.");
+        setLoading(false);
+        return;
+      }
+      await axios.post(`${API_BASE}/api/alerts`, {
+        userId: user._id,
+        type: "GAS_LEAK",
+        location: { lat: 0, lng: 0 },
+      });
+      setMsg("🛢️ Gas leak alert simulated!");
+      const res = await axios.get(`${API_BASE}/api/alerts/user/${deviceId}`);
+      setAlerts(res.data);
+    } catch {
+      setMsg("Failed to simulate gas alert.");
     }
     setLoading(false);
   };
@@ -103,6 +163,22 @@ const Login = () => {
             {loading ? "Loading..." : "Login & Show History"}
           </motion.button>
         </form>
+        <motion.button
+          type="button"
+          className="btn btn-warning w-full mt-4 text-xl"
+          onClick={simulateFireAlert}
+          disabled={loading || !deviceId}
+        >
+          Simulate Fire Alert
+        </motion.button>
+        <motion.button
+          type="button"
+          className="btn btn-info w-full mt-4 text-xl"
+          onClick={simulateGasAlert}
+          disabled={loading || !deviceId}
+        >
+          Simulate Gas Alert
+        </motion.button>
         {msg && (
           <div className="mt-6 text-center text-red-600 font-semibold text-xl">
             {msg}

@@ -17,9 +17,10 @@ export default function AuthorityDashboard() {
     fetchInitialAlerts();
 
     // Listen for real-time alerts
-    socket.on('new_alert', ({ alert, user }) => {
-      const enrichedAlert = { ...alert, userId: user };
-      setAlerts(prev => [enrichedAlert, ...prev]);
+    socket.on('new_alert', ({ alert }) => {
+      if (alert.type === "FIRE") {
+        setAlerts(prev => [alert, ...prev]);
+      }
     });
 
     return () => socket.disconnect();

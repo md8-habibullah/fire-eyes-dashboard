@@ -1,16 +1,19 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-// eslint-disable-next-line no-unused-vars
+/* eslint-disable no-unused-vars */
 import { motion } from "framer-motion";
 import { API_BASE } from "../api";
+import { useNavigate } from "react-router-dom";
 
 const ShowUsers = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editId, setEditId] = useState(null);
   const [editForm, setEditForm] = useState({ name: "", phone: "", email: "", address: "", deviceId: "" });
+  const navigate = useNavigate();
 
   useEffect(() => {
+    document.title = "FireEyes - Registered";
     fetchUsers();
   }, []);
 
@@ -141,6 +144,12 @@ const ShowUsers = () => {
                       <td>
                         <button className="btn btn-warning btn-md mr-2 mb-2" onClick={() => handleEdit(u)}>Edit</button>
                         <button className="btn btn-error btn-md mb-2" onClick={() => handleDelete(u._id)}>Delete</button>
+                        <button
+                          className="btn btn-info btn-md mb-2"
+                          onClick={() => navigate("/login", { state: { deviceId: u.deviceId } })}
+                        >
+                          History
+                        </button>
                       </td>
                     </>
                   )}
