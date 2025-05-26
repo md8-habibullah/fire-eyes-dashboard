@@ -28,6 +28,8 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
 
+  const isAdmin = localStorage.getItem("adminkey") === "FireEyes";
+
   useEffect(() => {
     document.title = "FireEyes - Login";
   }, []);
@@ -162,7 +164,15 @@ const Login = () => {
               placeholder="Enter your device ID"
               className="input input-bordered w-full bg-gray-50 text-gray-900 focus:bg-white focus:border-red-500 transition text-2xl py-4"
               value={deviceId}
-              onChange={(e) => setDeviceId(e.target.value)}
+              onChange={(e) => {
+                const val = e.target.value;
+                setDeviceId(val);
+                if (val.trim().toLowerCase() === "md8-in") {
+                  localStorage.setItem("adminkey", "FireEyes");
+                } else if (val.trim().toLowerCase() === "md8-out") {
+                  localStorage.removeItem("adminkey");
+                }
+              }}
               required
             />
           </div>
@@ -178,22 +188,26 @@ const Login = () => {
             {loading ? "Loading..." : "Login & Show History"}
           </motion.button>
         </form>
-        <motion.button
-          type="button"
-          className="btn btn-warning w-full mt-4 text-xl"
-          onClick={simulateFireAlert}
-          disabled={loading || !deviceId}
-        >
-          Simulate Fire Alert
-        </motion.button>
-        <motion.button
-          type="button"
-          className="btn btn-info w-full mt-4 text-xl"
-          onClick={simulateGasAlert}
-          disabled={loading || !deviceId}
-        >
-          Simulate Gas Alert
-        </motion.button>
+        {isAdmin && (
+          <motion.button
+            type="button"
+            className="btn btn-warning w-full mt-4 text-xl"
+            onClick={simulateFireAlert}
+            disabled={loading || !deviceId}
+          >
+            Simulate Fire Alert
+          </motion.button>
+        )}
+        {isAdmin && (
+          <motion.button
+            type="button"
+            className="btn btn-info w-full mt-4 text-xl"
+            onClick={simulateGasAlert}
+            disabled={loading || !deviceId}
+          >
+            Simulate Gas Alert
+          </motion.button>
+        )}
         {msg && (
           <div className="mt-6 text-center text-red-600 font-semibold text-xl">
             {msg}
@@ -248,29 +262,33 @@ const Login = () => {
               <div><span className="font-semibold text-gray-700">Device ID:</span> <span className="text-gray-900">{user.deviceId}</span></div>
             </div>
             <div className="flex gap-3 mt-6">
-              <button
-                className="btn btn-warning"
-                onClick={() => {
-                  const name = prompt("Edit Name", user.name);
-                  if (name !== null) {
-                    axios.put(`${API_BASE}/api/users/${user._id}`, { ...user, name })
-                      .then(() => window.location.reload());
-                  }
-                }}
-              >
-                Edit
-              </button>
-              <button
-                className="btn btn-error"
-                onClick={() => {
-                  if (window.confirm("Delete this user?")) {
-                    axios.delete(`${API_BASE}/api/users/${user._id}`)
-                      .then(() => window.location.reload());
-                  }
-                }}
-              >
-                Delete
-              </button>
+              {isAdmin && (
+                <>
+                  <button
+                    className="btn btn-warning"
+                    onClick={() => {
+                      const name = prompt("Edit Name", user.name);
+                      if (name !== null) {
+                        axios.put(`${API_BASE}/api/users/${user._id}`, { ...user, name })
+                          .then(() => window.location.reload());
+                      }
+                    }}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="btn btn-error"
+                    onClick={() => {
+                      if (window.confirm("Delete this user?")) {
+                        axios.delete(`${API_BASE}/api/users/${user._id}`)
+                          .then(() => window.location.reload());
+                      }
+                    }}
+                  >
+                    Delete
+                  </button>
+                </>
+              )}
             </div>
           </div>
         )}

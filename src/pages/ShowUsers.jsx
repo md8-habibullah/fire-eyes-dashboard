@@ -52,6 +52,8 @@ const ShowUsers = () => {
     setEditId(null);
   };
 
+  const isAdmin = localStorage.getItem("adminkey") === "FireEyes";
+
   return (
     <div className="max-w-5xl mx-auto mt-10 bg-gradient-to-br from-yellow-50 via-orange-50 to-red-50 rounded-3xl shadow-2xl p-8 border border-orange-200">
       <h2 className="text-4xl font-extrabold text-red-600 tracking-wide mb-10 text-center drop-shadow">
@@ -142,8 +144,12 @@ const ShowUsers = () => {
                       <td className="py-3 px-3 text-gray-700 text-lg">{u.address}</td>
                       <td className="py-3 px-3 font-mono text-base text-orange-700">{u.deviceId}</td>
                       <td>
-                        <button className="btn btn-warning btn-md mr-2 mb-2" onClick={() => handleEdit(u)}>Edit</button>
-                        <button className="btn btn-error btn-md mb-2" onClick={() => handleDelete(u._id)}>Delete</button>
+                        {isAdmin && (
+                          <>
+                            <button className="btn btn-warning btn-md mr-2 mb-2" onClick={() => handleEdit(u)}>Edit</button>
+                            <button className="btn btn-error btn-md mb-2" onClick={() => handleDelete(u._id)}>Delete</button>
+                          </>
+                        )}
                         <button
                           className="btn btn-info btn-md mb-2"
                           onClick={() => navigate("/login", { state: { deviceId: u.deviceId } })}

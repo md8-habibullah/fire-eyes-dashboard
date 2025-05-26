@@ -22,6 +22,7 @@ const Dashboard = () => {
   const [gasAlerts, setGasAlerts] = useState([]);
   const [loading, setLoading] = useState(true);
   const socketRef = useRef(null);
+  const isAdmin = localStorage.getItem("adminkey") === "FireEyes";
 
   // Helper to compare arrays (by alert _id and status)
   const isSameAlerts = (a, b) =>
@@ -164,7 +165,7 @@ const Dashboard = () => {
                     )}
                   </div>
                   <div className="flex gap-3 mt-4">
-                    {alert.status !== "ACKNOWLEDGED" && (
+                    {isAdmin && alert.status !== "ACKNOWLEDGED" && (
                       <button
                         className="btn btn-warning btn-md"
                         onClick={() => handleStatusChange(alert._id, "ACKNOWLEDGED")}
@@ -172,12 +173,14 @@ const Dashboard = () => {
                         Mark as Acknowledged
                       </button>
                     )}
-                    <button
-                      className="btn btn-success btn-md"
-                      onClick={() => handleStatusChange(alert._id, "RESOLVED")}
-                    >
-                      Mark as Resolved
-                    </button>
+                    {isAdmin && (
+                      <button
+                        className="btn btn-success btn-md"
+                        onClick={() => handleStatusChange(alert._id, "RESOLVED")}
+                      >
+                        Mark as Resolved
+                      </button>
+                    )}
                   </div>
                 </li>
               ))}
@@ -226,7 +229,7 @@ const Dashboard = () => {
                     )}
                   </div>
                   <div className="flex gap-3 mt-4">
-                    {alert.status !== "ACKNOWLEDGED" && (
+                    {isAdmin && alert.status !== "ACKNOWLEDGED" && (
                       <button
                         className="btn btn-warning btn-md"
                         onClick={() => handleStatusChange(alert._id, "ACKNOWLEDGED")}
@@ -234,12 +237,14 @@ const Dashboard = () => {
                         Mark as Acknowledged
                       </button>
                     )}
-                    <button
-                      className="btn btn-success btn-md"
-                      onClick={() => handleStatusChange(alert._id, "RESOLVED")}
-                    >
-                      Mark as Resolved
-                    </button>
+                    {isAdmin && (
+                      <button
+                        className="btn btn-success btn-md"
+                        onClick={() => handleStatusChange(alert._id, "RESOLVED")}
+                      >
+                        Mark as Resolved
+                      </button>
+                    )}
                   </div>
                 </li>
               ))}
