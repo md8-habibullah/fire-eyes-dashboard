@@ -55,7 +55,7 @@ const ShowUsers = () => {
   const isAdmin = localStorage.getItem("adminkey") === "FireEyes";
 
   return (
-    <div className="max-w-5xl mx-auto mt-10 bg-gradient-to-br from-yellow-50 via-orange-50 to-red-50 rounded-3xl shadow-2xl p-8 border border-orange-200">
+    <div className="max-w-7xl w-full mx-auto mt-10 bg-gradient-to-br from-yellow-50 via-orange-50 to-red-50 rounded-3xl shadow-2xl p-8 border border-orange-200">
       <h2 className="text-4xl font-extrabold text-red-600 tracking-wide mb-10 text-center drop-shadow">
         Registered Users
       </h2>
