@@ -120,7 +120,7 @@ const ShowUsers = () => {
                           name="address"
                           value={editForm.address}
                           onChange={handleEditChange}
-                          className="input input-md input-bordered w-full text-lg"
+                          className="input input-md input-bordered w-full text-lg break-words max-w-xs"
                         />
                       </td>
                       <td>
@@ -141,7 +141,7 @@ const ShowUsers = () => {
                       <td className="py-3 px-3 text-gray-800 font-semibold text-lg">{u.name}</td>
                       <td className="py-3 px-3 text-gray-700 text-lg">{u.phone}</td>
                       <td className="py-3 px-3 text-gray-700 text-lg">{u.email}</td>
-                      <td className="py-3 px-3 text-gray-700 text-lg">{u.address}</td>
+                      <td className="py-3 px-3 text-gray-700 text-lg break-words max-w-xs">{u.address}</td>
                       <td className="py-3 px-3 font-mono text-base text-orange-700">{u.deviceId}</td>
                       <td>
                         {isAdmin && (
