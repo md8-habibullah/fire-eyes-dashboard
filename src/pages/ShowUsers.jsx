@@ -65,7 +65,7 @@ const ShowUsers = () => {
         <div className="text-center text-gray-500 text-xl">No users found.</div>
       ) : (
         <div className="overflow-x-auto">
-          <table className="table w-full rounded-2xl overflow-hidden shadow border border-orange-200 text-lg">
+          <table className="table w-full min-w-[900px] rounded-2xl overflow-hidden shadow border border-orange-200 text-lg">
             <thead>
               <tr className="bg-gradient-to-r from-orange-200 via-yellow-100 to-red-100 text-orange-900 text-xl">
                 <th className="py-4 px-3 text-left font-bold">Name</th>
