@@ -75,6 +75,22 @@ const Dashboard = () => {
     socketRef.current = io(API_BASE);
     console.log("Socket connected to:", API_BASE);
 
+    // Function to update alerts
+    const updateAlerts = (setAlerts, alert) => {
+      setAlerts((prev) => {
+        const index = prev.findIndex((a) => a._id === alert._id);
+        if (index !== -1) {
+          if (alert.status === "RESOLVED") return prev.filter((a) => a._id !== alert._id);
+          const newAlerts = [...prev];
+          newAlerts[index] = alert;
+          return newAlerts;
+        } else if (alert.status !== "RESOLVED") {
+          return [alert, ...prev];
+        }
+        return prev;
+      });
+    };
+
     // Listen for new alerts
     socketRef.current.on("new_alert", ({ alert }) => {
       console.log("Received new_alert:", alert);
@@ -98,17 +114,9 @@ const Dashboard = () => {
     socketRef.current.on("alert_updated", (alert) => {
       console.log("Received alert_updated:", alert);
       if (alert.type === "FIRE") {
-        setFireAlerts((prev) => {
-          if (alert.status === "RESOLVED")
-            return prev.filter((a) => a._id !== alert._id);
-          return prev.map((a) => (a._id === alert._id ? alert : a));
-        });
+        updateAlerts(setFireAlerts, alert);
       } else if (alert.type === "GAS_LEAK") {
-        setGasAlerts((prev) => {
-          if (alert.status === "RESOLVED")
-            return prev.filter((a) => a._id !== alert._id);
-          return prev.map((a) => (a._id === alert._id ? alert : a));
-        });
+        updateAlerts(setGasAlerts, alert);
       }
     });
 
