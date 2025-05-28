@@ -1,10 +1,10 @@
 import { useEffect, useState, useRef } from "react";
-/* eslint-disable no-unused-vars */
+// eslint-disable-next-line no-unused-vars
 import { motion, MotionConfig, motion as Motion } from "framer-motion";
 import axios from "axios";
 import { API_BASE } from "../api";
-import io from "socket.io-client"; // <-- Add this
-import FireIcon from "../components/FireIcon"; // Make sure this import is at the top
+import io from "socket.io-client";
+import FireIcon from "../components/FireIcon";
 import GasIcon from "../components/GasIcon";
 
 const cardVariants = {
@@ -30,13 +30,6 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const socketRef = useRef(null);
   const isAdmin = localStorage.getItem("adminkey") === "FireEyes";
-
-  // Helper to compare arrays (by alert _id and status)
-  const isSameAlerts = (a, b) =>
-    a.length === b.length &&
-    a.every(
-      (alert, i) => alert._id === b[i]._id && alert.status === b[i].status
-    );
 
   // Fetch all alerts once on mount
   const fetchAlerts = () => {
@@ -80,9 +73,11 @@ const Dashboard = () => {
 
     // Setup socket connection
     socketRef.current = io(API_BASE);
+    console.log("Socket connected to:", API_BASE);
 
     // Listen for new alerts
     socketRef.current.on("new_alert", ({ alert }) => {
+      console.log("Received new_alert:", alert);
       if (alert.status === "RESOLVED") return;
       if (alert.type === "FIRE") {
         setFireAlerts((prev) => {
@@ -101,9 +96,9 @@ const Dashboard = () => {
 
     // Listen for alert status updates
     socketRef.current.on("alert_updated", (alert) => {
+      console.log("Received alert_updated:", alert);
       if (alert.type === "FIRE") {
         setFireAlerts((prev) => {
-          // Remove if resolved, else update in list
           if (alert.status === "RESOLVED")
             return prev.filter((a) => a._id !== alert._id);
           return prev.map((a) => (a._id === alert._id ? alert : a));
@@ -118,6 +113,7 @@ const Dashboard = () => {
     });
 
     return () => {
+      console.log("Socket disconnected");
       socketRef.current.disconnect();
     };
   }, []);
@@ -138,7 +134,6 @@ const Dashboard = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, type: "spring" }}
       >
-        {/* <FireIcon size={70} /> */}
         <span className="text-3xl text-gray-500">&#8594;</span>
         <span className="underline underline-offset-8 decoration-4 decoration-orange-400">
           Fire Eyes Dashboard
@@ -257,61 +252,64 @@ const Dashboard = () => {
             </Motion.p>
           ) : (
             <ul className="space-y-6">
-              {gasAlerts.map((alert) => (
-                <li
-                  key={alert._id}
-                  className="bg-white/90 rounded-xl p-6 shadow border-l-4 border-blue-400 flex flex-col gap-2"
-                >
-                  <div className="flex flex-wrap gap-4 items-center mb-2">
-                    <span
-                      className={`px-3 py-1 rounded-full font-bold text-lg ${
-                        statusColors[alert.status]
-                      }`}
-                    >
-                      {alert.status}
-                    </span>
-                    <span className="font-bold text-blue-700 text-lg">
-                      {alert.type}
-                    </span>
-                    <span className="text-gray-700 text-base">
-                      <b>Time:</b> {new Date(alert.timestamp).toLocaleString()}
-                    </span>
-                  </div>
-                  <div className="text-gray-700 text-lg">
-                    {alert.userId && (
-                      <>
-                        <b>User:</b> {alert.userId.name} <br />
-                        <b>Phone:</b> {alert.userId.phone} <br />
-                        <b>Email:</b> {alert.userId.email} <br />
-                        <b>Address:</b> {alert.userId.address} <br />
-                        <b>Device ID:</b> {alert.userId.deviceId}
-                      </>
-                    )}
-                  </div>
-                  <div className="flex gap-3 mt-4">
-                    {isAdmin && alert.status !== "ACKNOWLEDGED" && (
-                      <button
-                        className="btn btn-warning btn-md"
-                        onClick={() =>
-                          handleStatusChange(alert._id, "ACKNOWLEDGED")
-                        }
+              {gasAlerts.map((alert) => {
+                console.log("Rendering gas alert:", alert);
+                return (
+                  <li
+                    key={alert._id}
+                    className="bg-white/90 rounded-xl p-6 shadow border-l-4 border-blue-400 flex flex-col gap-2"
+                  >
+                    <div className="flex flex-wrap gap-4 items-center mb-2">
+                      <span
+                        className={`px-3 py-1 rounded-full font-bold text-lg ${
+                          statusColors[alert.status]
+                        }`}
                       >
-                        Mark as Acknowledged
-                      </button>
-                    )}
-                    {isAdmin && (
-                      <button
-                        className="btn btn-success btn-md"
-                        onClick={() =>
-                          handleStatusChange(alert._id, "RESOLVED")
-                        }
-                      >
-                        Mark as Resolved
-                      </button>
-                    )}
-                  </div>
-                </li>
-              ))}
+                        {alert.status}
+                      </span>
+                      <span className="font-bold text-blue-700 text-lg">
+                        {alert.type}
+                      </span>
+                      <span className="text-gray-700 text-base">
+                        <b>Time:</b> {new Date(alert.timestamp).toLocaleString()}
+                      </span>
+                    </div>
+                    <div className="text-gray-700 text-lg">
+                      {alert.userId && (
+                        <>
+                          <b>User:</b> {alert.userId.name} <br />
+                          <b>Phone:</b> {alert.userId.phone} <br />
+                          <b>Email:</b> {alert.userId.email} <br />
+                          <b>Address:</b> {alert.userId.address} <br />
+                          <b>Device ID:</b> {alert.userId.deviceId}
+                        </>
+                      )}
+                    </div>
+                    <div className="flex gap-3 mt-4">
+                      {isAdmin && alert.status !== "ACKNOWLEDGED" && (
+                        <button
+                          className="btn btn-warning btn-md"
+                          onClick={() =>
+                            handleStatusChange(alert._id, "ACKNOWLEDGED")
+                          }
+                        >
+                          Mark as Acknowledged
+                        </button>
+                      )}
+                      {isAdmin && (
+                        <button
+                          className="btn btn-success btn-md"
+                          onClick={() =>
+                            handleStatusChange(alert._id, "RESOLVED")
+                          }
+                        >
+                          Mark as Resolved
+                        </button>
+                      )}
+                    </div>
+                  </li>
+                );
+              })}
             </ul>
           )}
         </motion.div>
