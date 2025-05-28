@@ -31,7 +31,7 @@ const Dashboard = () => {
   const socketRef = useRef(null);
   const isAdmin = localStorage.getItem("adminkey") === "FireEyes";
 
-  // Fetch all alerts once on mount
+  // Fetch all alerts
   const fetchAlerts = () => {
     setLoading(true);
     axios
@@ -65,31 +65,48 @@ const Dashboard = () => {
         setFireAlerts(newFireAlerts);
         setGasAlerts(newGasAlerts);
       })
+      .catch((err) => {
+        console.error("Failed to fetch alerts:", err);
+      })
       .finally(() => setLoading(false));
+  };
+
+  // Function to update alerts
+  const updateAlerts = (setAlerts, alert) => {
+    setAlerts((prev) => {
+      const index = prev.findIndex((a) => a._id === alert._id);
+      if (index !== -1) {
+        if (alert.status === "RESOLVED") return prev.filter((a) => a._id !== alert._id);
+        const newAlerts = [...prev];
+        newAlerts[index] = alert;
+        return newAlerts;
+      } else if (alert.status !== "RESOLVED") {
+        return [alert, ...prev];
+      }
+      return prev;
+    });
   };
 
   useEffect(() => {
     fetchAlerts();
 
     // Setup socket connection
-    socketRef.current = io(API_BASE);
+    socketRef.current = io(API_BASE, {
+      transports: ["websocket"],
+      reconnection: true,
+      reconnectionAttempts: Infinity,
+      reconnectionDelay: 1000,
+    });
     console.log("Socket connected to:", API_BASE);
 
-    // Function to update alerts
-    const updateAlerts = (setAlerts, alert) => {
-      setAlerts((prev) => {
-        const index = prev.findIndex((a) => a._id === alert._id);
-        if (index !== -1) {
-          if (alert.status === "RESOLVED") return prev.filter((a) => a._id !== alert._id);
-          const newAlerts = [...prev];
-          newAlerts[index] = alert;
-          return newAlerts;
-        } else if (alert.status !== "RESOLVED") {
-          return [alert, ...prev];
-        }
-        return prev;
-      });
-    };
+    socketRef.current.on("connect", () => {
+      console.log("Socket connected successfully");
+      fetchAlerts(); // Refresh alerts on reconnect
+    });
+
+    socketRef.current.on("connect_error", (err) => {
+      console.error("Socket connection error:", err.message);
+    });
 
     // Listen for new alerts
     socketRef.current.on("new_alert", ({ alert }) => {
@@ -128,10 +145,14 @@ const Dashboard = () => {
 
   // Change alert status
   const handleStatusChange = async (alertId, newStatus) => {
-    await axios.patch(`${API_BASE}/api/alerts/${alertId}`, {
-      status: newStatus,
-    });
-    // No need to fetchAlerts(); socket will update UI
+    try {
+      await axios.patch(`${API_BASE}/api/alerts/${alertId}`, {
+        status: newStatus,
+      });
+      // No need to fetchAlerts(); socket will update UI
+    } catch (err) {
+      console.error("Failed to update alert status:", err);
+    }
   };
 
   return (

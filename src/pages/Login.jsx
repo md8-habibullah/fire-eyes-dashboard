@@ -64,6 +64,20 @@ const Login = () => {
     setLoading(false);
   };
 
+  const checkActiveAlert = async (userId, type) => {
+    try {
+      const res = await axios.get(`${API_BASE}/api/alerts/active`);
+      return res.data.some(
+        (alert) =>
+          alert.userId._id === userId &&
+          alert.type === type &&
+          ["ACTIVE", "ACKNOWLEDGED"].includes(alert.status)
+      );
+    } catch {
+      return false;
+    }
+  };
+
   const simulateFireAlert = async () => {
     setMsg("");
     setLoading(true);
@@ -74,6 +88,12 @@ const Login = () => {
       );
       if (!user) {
         setMsg("User not found for this Device ID.");
+        setLoading(false);
+        return;
+      }
+      const hasActiveAlert = await checkActiveAlert(user._id, "FIRE");
+      if (hasActiveAlert) {
+        setMsg("🔥 An active fire alert already exists for this user.");
         setLoading(false);
         return;
       }
@@ -104,6 +124,12 @@ const Login = () => {
         setLoading(false);
         return;
       }
+      const hasActiveAlert = await checkActiveAlert(user._id, "GAS_LEAK");
+      if (hasActiveAlert) {
+        setMsg("🛢️ An active gas leak alert already exists for this user.");
+        setLoading(false);
+        return;
+      }
       await axios.post(`${API_BASE}/api/alerts`, {
         userId: user._id,
         type: "GAS_LEAK",
@@ -128,11 +154,6 @@ const Login = () => {
       >
         <div className="flex flex-col items-center mb-10">
           <div className="relative w-36 h-36 mb-4 flex items-center justify-center">
-            {/* Glowing background */}
-            {/* <div className="absolute inset-0 rounded-full bg-gradient-to-br from-red-500 via-orange-400 to-yellow-300 blur-2xl opacity-70"></div> */}
-            {/* Gradient border */}
-            {/* <div className="absolute inset-0 rounded-full border-4 border-transparent bg-gradient-to-r from-red-500 via-orange-400 to-yellow-300 animate-pulse"></div> */}
-            {/* Animated Fire Icon */}
             <FireIcon size={150} className="relative rounded-full" />
           </div>
           <h1 className="text-5xl font-extrabold text-red-600 tracking-wide mb-2 drop-shadow text-center">
