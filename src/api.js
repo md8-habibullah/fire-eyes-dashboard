@@ -1,2 +1,2 @@
-export const API_BASE = "https://fire-eyes-backend-production.up.railway.app";
+export const API_BASE = "https://example.com/api";
 
