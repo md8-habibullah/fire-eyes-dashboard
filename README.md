@@ -60,7 +60,7 @@ npm install
 Edit `src/api.js` if your backend URL is different:
 
 ```js
-export const API_BASE = "https://fire-eyes-backend-production.up.railway.app";
+export const API_BASE = "https://example.com/api";
 ```
 
 ### 4. **Run the app**
