@@ -20,12 +20,8 @@ This is the frontend for the [Fire Eyes](https://github.com/md8-habibullah/fire-
 - **Theming:**  
   Easily switch between light and dark (and more) themes.
 
----
-
-## 🖥️ Screenshots
-
-![Dashboard Screenshot](https://cdn-icons-png.flaticon.com/512/16767/16767287.png)  
-*(Replace with your own screenshots!)*
+> 👉 Make sure the backend is running and connected:  
+> **[🔗 Fire Eyes Backend (API Server)](https://github.com/md8-habibullah/fire-eyes-backend)**
 
 ---
 
